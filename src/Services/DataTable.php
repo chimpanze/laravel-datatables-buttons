@@ -336,7 +336,7 @@ abstract class DataTable implements DataTableButtons
     {
         $export = new GenericExport();
         $export->setArrayData($this->getDataForExport());
-        $export->download($this->getFilename(), 'pdf');
+        $export->download($this->getFilename(), 'Dompdf');
     }
 
     /**
