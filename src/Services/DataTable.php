@@ -8,6 +8,7 @@ use Yajra\DataTables\Contracts\DataTableScope;
 use Yajra\DataTables\Contracts\DataTableButtons;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Yajra\DataTables\Export\GenericExport;
 use Yajra\DataTables\Transformers\DataArrayTransformer;
 
 abstract class DataTable implements DataTableButtons
@@ -333,14 +334,9 @@ abstract class DataTable implements DataTableButtons
      */
     protected function buildExcelFile()
     {
-        /** @var \Maatwebsite\Excel\Excel $excel */
-        $excel = app('excel');
-
-        return $excel->create($this->getFilename(), function (LaravelExcelWriter $excel) {
-            $excel->sheet('exported-data', function (LaravelExcelWorksheet $sheet) {
-                $sheet->fromArray($this->getDataForExport());
-            });
-        });
+        $export = new GenericExport();
+        $export->setArrayData($this->getDataForExport());
+        $export->download($this->getFilename());
     }
 
     /**
