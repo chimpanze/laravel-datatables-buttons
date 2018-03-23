@@ -324,19 +324,21 @@ abstract class DataTable implements DataTableButtons
      */
     public function excel()
     {
-        $this->buildExcelFile()->download('xls');
+        return $this->buildExcelFile('Xlsx', 'xlsx');
     }
 
     /**
      * Build excel file and prepare for export.
      *
+     * @param string $writerType
+     * @param string $fileExt
      * @return \Maatwebsite\Excel\Writers\LaravelExcelWriter
      */
-    protected function buildExcelFile()
+    protected function buildExcelFile($writerType, $fileExt)
     {
         $export = new GenericExport();
         $export->setArrayData($this->getDataForExport());
-        $export->download($this->getFilename(), 'Dompdf');
+        return $export->download($this->getFilename().'.'.$fileExt, $writerType);
     }
 
     /**
@@ -401,7 +403,7 @@ abstract class DataTable implements DataTableButtons
      */
     public function csv()
     {
-        $this->buildExcelFile()->download('csv');
+        return $this->buildExcelFile('Csv', 'csv');
     }
 
     /**
@@ -414,7 +416,7 @@ abstract class DataTable implements DataTableButtons
         if ('snappy' == config('datatables-buttons.pdf_generator', 'snappy')) {
             return $this->snappyPdf();
         } else {
-            $this->buildExcelFile()->download('pdf');
+            return $this->buildExcelFile('Dompdf', 'pdf');
         }
     }
 
@@ -431,10 +433,10 @@ abstract class DataTable implements DataTableButtons
         $orientation = config('datatables-buttons.snappy.orientation');
 
         $snappy->setOptions($options)
-               ->setOrientation($orientation);
+            ->setOrientation($orientation);
 
         return $snappy->loadHTML($this->printPreview())
-                      ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename() . '.pdf');
     }
 
     /**
